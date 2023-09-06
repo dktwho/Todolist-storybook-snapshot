@@ -42,42 +42,32 @@ const initialState: TasksStateType = {
 export const tasksReducer = (state: TasksStateType = initialState, action: ActionsType): TasksStateType => {
     switch (action.type) {
         case 'REMOVE-TASK': {
-            const stateCopy = {...state}
-            const tasks = stateCopy[action.todolistId];
-            const newTasks = tasks.filter(t => t.id != action.taskId);
-            stateCopy[action.todolistId] = newTasks;
-            return stateCopy;
+            return {...state, [action.todolistId]: state[action.todolistId].filter(task => task.id !== action.taskId)}
         }
         case 'ADD-TASK': {
-            const stateCopy = {...state}
-            const newTask: TaskType = {
-                id: v1(),
-                title: action.title,
-                isDone: false
+            return {
+                ...state,
+                [action.todolistId]: [{id: v1(), title: action.title, isDone: false}, ...state[action.todolistId]]
             }
-            const tasks = stateCopy[action.todolistId];
-            const newTasks = [newTask, ...tasks];
-            stateCopy[action.todolistId] = newTasks;
-            return stateCopy;
         }
-        case 'CHANGE-TASK-STATUS': {
-            return ({
+
+        case 'CHANGE-TASK-STATUS':
+            return {
                 ...state,
-                [action.todolistId]: state[action.todolistId]
-                    .map(t => t.id === action.taskId
-                        ? {...t, isDone: action.isDone}
-                        : t)
-            });
-        }
-        case 'CHANGE-TASK-TITLE': {
-            return ({
+                [action.todolistId]: state[action.todolistId].map(task => task.id === action.taskId ? {
+                    ...task,
+                    isDone: action.isDone
+                } : task)
+            }
+
+        case "CHANGE-TASK-TITLE":
+            return {
                 ...state,
-                [action.todolistId]: state[action.todolistId]
-                    .map(t => t.id === action.taskId
-                        ? {...t, title: action.title}
-                        : t)
-            });
-        }
+                [action.todolistId]: state[action.todolistId].map(task => task.id === action.taskId ? {
+                    ...task,
+                    title: action.title
+                } : task)
+            }
         case 'ADD-TODOLIST': {
             return {
                 ...state,
