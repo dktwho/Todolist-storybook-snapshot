@@ -1,9 +1,10 @@
 import type {Meta, StoryObj} from '@storybook/react';
 import {action} from '@storybook/addon-actions'
-import React from "react";
+import React, {ChangeEvent, useState} from "react";
 
 import {Task} from "../Task";
 import {TaskType} from "../Todolist";
+import {AddItemFormWithError} from "./AddItemForm.stories";
 
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 const meta: Meta<typeof Task> = {
@@ -42,4 +43,14 @@ export const TaskIsNotDoneStory: Story = {
     }
 }
 
-
+export const TaskInteractiveExample = () => {
+    const [task, setTask] = useState({id: '2f4rg', title: 'Some TASK', isDone: false})
+    return (
+        <Task
+            changeTaskStatus={() => setTask({...task, isDone: !task.isDone})}
+            changeTaskTitle={(_, newTitle) => setTask({...task, title: newTitle})}
+            removeTask={action('remove task')}
+            task={task}
+            todolistId={'todolistId1'}/>
+    )
+}
